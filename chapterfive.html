@@ -1,0 +1,220 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 5: Elimination Vote - SCHOOL TRIALS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-black text-white font-mono">
+    <div class="container mx-auto px-4 py-8 min-h-screen">
+        <h1 class="text-4xl font-bold mb-8 text-center glitch-text">CHAPTER 5: ELIMINATION VOTE</h1>
+        
+        <div class="survivor-count text-center mb-6" id="survivor-count">40 students remain</div>
+        
+        <div class="trial-container screen-flicker">
+            <div class="trial-title">TRIAL FIVE: VOTE OR LEAVE</div>
+            
+            <div class="trial-description mb-8">
+                <p>You must vote for one student to be eliminated.</p>
+                <p>The student with the most votes will be eliminated.</p>
+                <p>Alternatively, you may choose to leave the trials.</p>
+                <p>Choose wisely. Your decision is final.</p>
+            </div>
+            
+            <div id="vote-container" class="mb-8">
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="bg-gray-900 border border-red-900 p-4">
+                        <h3 class="text-xl mb-4">Vote to Eliminate:</h3>
+                        <div class="space-y-2 max-h-60 overflow-y-auto">
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Aades">Aades – Just a friendly person</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Affan">Affan – Truthful sometimes</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Afnan">Afnan – Class Clown's best friend</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Ahmad">Ahmad – The Class Clown</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Arjun">Arjun - Clever, Friendly, but Silent</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Aryan">Aryan – Just a curious boy</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Asher">Asher – Just a friendly person</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Aslam">Aslam – A naughty boy</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Badri">Badri – Worst in everything</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Bilal">Bilal – A naughty boy</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Danish Sheikh">Danish Sheikh – Very naughty boy</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Darshan">Darshan – Average person</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Ganet">Ganet – Best Handwriting</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Hisham">Hisham – Best in Voice</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Isa">Isa – Best at drawing and English</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Jafar">Jafar – Good at Codes</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Jasmir">Jasmir – Ramil's friend</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Kevin">Kevin – Badri 2.0 but worse</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Ayaan Khazi">Ayaan Khazi – Isa's friend</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Eshan">Eshan – Plays the class</div>
+                        </div>
+                    </div>
+                    
+                    <div class="bg-gray-900 border border-red-900 p-4">
+                        <h3 class="text-xl mb-4">More Students:</h3>
+                        <div class="space-y-2 max-h-60 overflow-y-auto">
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Illan">Illan – Thinks like a King</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Zayaan">Zayaan – Also best at tech and drawing</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Ayaan Mirza">Ayaan Mirza – Best at Tech and Ideas</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Farhan">Farhan – Best friend of a Bad person</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Hillal">Hillal – The worst Classmonitor</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Danish">Danish – Average person</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Najih">Najih - Smart, fastest writer in class, powerful</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Raaz">Raaz – Secretive boy, also the fastest writer</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Ramil">Ramil – Doesn't know how to use his IQ, but good at tricks</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Ridwaan">Ridwaan – Friendly but weak</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Rishan">Rishan – Just an average person</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Ryan">Ryan – Friendly but bullied</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Shuhaib">Shuhaib – Very Naughty</div>
+                            <div class="vote-option p-2 hover:bg-gray-800 cursor-pointer" data-name="Yash">Yash – Naughtiest</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+            
+            <div id="selected-vote" class="mb-8 p-4 bg-gray-900 border border-red-900 text-center hidden">
+                <p>You have selected: <span id="selected-name" class="font-bold text-red-500"></span></p>
+            </div>
+            
+            <div class="text-center space-x-4">
+                <button id="start-vote" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm">START VOTE</button>
+                <button id="confirm-vote" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm hidden">CONFIRM VOTE</button>
+                <button id="leave-option" class="game-btn px-8 py-3 text-xl bg-gray-700 hover:bg-gray-600 transition-colors duration-300 rounded-sm hidden">LEAVE TRIALS</button>
+            </div>
+        </div>
+        
+        <div class="fixed bottom-4 right-4 flex space-x-4">
+            <button id="sound-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">🔊</button>
+            <button id="music-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">♪ ON</button>
+        </div>
+    </div>
+    
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load game state
+            loadGameState();
+            gameState.survivorCount = 40; // Set for this chapter
+            updateSurvivorCount();
+            
+            // Play trial music
+            playMusic('sounds/tension_theme.mp3');
+            
+            // Trial elements
+            const startButton = document.getElementById('start-vote');
+            const confirmButton = document.getElementById('confirm-vote');
+            const leaveButton = document.getElementById('leave-option');
+            const voteOptions = document.querySelectorAll('.vote-option');
+            const selectedVote = document.getElementById('selected-vote');
+            const selectedName = document.getElementById('selected-name');
+            
+            // Game variables
+            let selectedStudent = null;
+            
+            // Start vote
+            startButton.addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                startButton.classList.add('hidden');
+                confirmButton.classList.remove('hidden');
+                leaveButton.classList.remove('hidden');
+            });
+            
+            // Vote option click
+            voteOptions.forEach(option => {
+                option.addEventListener('click', function() {
+                    // Remove selected class from all options
+                    voteOptions.forEach(opt => {
+                        opt.classList.remove('bg-red-900');
+                    });
+                    
+                    // Add selected class to clicked option
+                    this.classList.add('bg-red-900');
+                    
+                    // Set selected student
+                    selectedStudent = this.getAttribute('data-name');
+                    
+                    // Show selected vote
+                    selectedVote.classList.remove('hidden');
+                    selectedName.textContent = selectedStudent;
+                    
+                    playSound('sounds/click.mp3');
+                });
+            });
+            
+            // Confirm vote
+            confirmButton.addEventListener('click', function() {
+                if (!selectedStudent) {
+                    showModal('No Selection', 'Please select a student to vote for.', 'OK');
+                    return;
+                }
+                
+                playSound('sounds/click.mp3');
+                
+                // Show voting results
+                showVotingResults();
+            });
+            
+            // Leave option
+            leaveButton.addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                
+                // Confirm leaving
+                showModal('Confirm Leave', 'Are you sure you want to leave the trials?', 'Yes', 'No', function() {
+                    // User confirmed leaving
+                    window.location.href = 'leave-ending.html';
+                });
+            });
+            
+            // Show voting results
+            function showVotingResults() {
+                // Hide vote container
+                document.getElementById('vote-container').classList.add('hidden');
+                selectedVote.classList.add('hidden');
+                confirmButton.classList.add('hidden');
+                leaveButton.classList.add('hidden');
+                
+                // Show loading message
+                const trialContainer = document.querySelector('.trial-container');
+                const resultsElement = document.createElement('div');
+                resultsElement.className = 'voting-results mb-8 p-4 bg-gray-900 border border-red-900 text-center';
+                resultsElement.innerHTML = '<p class="text-xl">Tallying votes...</p>';
+                trialContainer.appendChild(resultsElement);
+                
+                // Simulate vote tallying
+                setTimeout(() => {
+                    // Show results
+                    resultsElement.innerHTML = `
+                        <h3 class="text-xl mb-4">Voting Results:</h3>
+                        <p class="mb-4">You voted for: <span class="font-bold text-red-500">${selectedStudent}</span></p>
+                        <p class="mb-4">The student with the most votes: <span class="font-bold text-red-500">Kevin</span></p>
+                        <p class="text-lg">Kevin has been eliminated from the trials.</p>
+                    `;
+                    
+                    // Show continue button
+                    const continueButton = document.createElement('button');
+                    continueButton.className = 'game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm mt-4';
+                    continueButton.textContent = 'CONTINUE';
+                    resultsElement.appendChild(continueButton);
+                    
+                    // Continue button click
+                    continueButton.addEventListener('click', function() {
+                        playSound('sounds/click.mp3');
+                        
+                        // Calculate elimination
+                        const eliminationRate = 0.2; // 20% elimination for voting
+                        const eliminated = Math.floor(gameState.survivorCount * eliminationRate);
+                        const remaining = gameState.survivorCount - eliminated;
+                        
+                        // Proceed to next chapter
+                        trialSuccess(remaining, 'chaptersix.html');
+                    });
+                    
+                    // Play elimination sound
+                    playSound('sounds/elimination.mp3');
+                }, 3000);
+            }
+        });
+    </script>
+</body>
+</html>

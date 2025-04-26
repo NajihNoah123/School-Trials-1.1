@@ -1,0 +1,289 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 3: Memory Maze - SCHOOL TRIALS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-black text-white font-mono">
+    <div class="container mx-auto px-4 py-8 min-h-screen">
+        <h1 class="text-4xl font-bold mb-8 text-center glitch-text">CHAPTER 3: MEMORY MAZE</h1>
+        
+        <div class="survivor-count text-center mb-6" id="survivor-count">112 students remain</div>
+        
+        <div class="trial-container screen-flicker">
+            <div class="trial-title">TRIAL THREE: PATTERN RECALL</div>
+            
+            <div class="trial-description mb-8">
+                <p>Memorize the sequence of symbols that appear.</p>
+                <p>After the sequence is shown, you must recreate it exactly.</p>
+                <p>Each round adds one more symbol to the sequence.</p>
+                <p>Complete 5 rounds to pass the trial.</p>
+                <p>Three mistakes will result in elimination.</p>
+            </div>
+            
+            <div class="timer text-center mb-8" id="timer">--:--</div>
+            
+            <div id="pattern-container" class="mb-8">
+                <div class="grid grid-cols-3 gap-4 max-w-md mx-auto">
+                    <div class="symbol-box bg-gray-900 border border-red-900 h-24 flex items-center justify-center text-3xl" data-symbol="△">△</div>
+                    <div class="symbol-box bg-gray-900 border border-red-900 h-24 flex items-center justify-center text-3xl" data-symbol="○">○</div>
+                    <div class="symbol-box bg-gray-900 border border-red-900 h-24 flex items-center justify-center text-3xl" data-symbol="□">□</div>
+                    <div class="symbol-box bg-gray-900 border border-red-900 h-24 flex items-center justify-center text-3xl" data-symbol="✕">✕</div>
+                    <div class="symbol-box bg-gray-900 border border-red-900 h-24 flex items-center justify-center text-3xl" data-symbol="⬠">⬠</div>
+                    <div class="symbol-box bg-gray-900 border border-red-900 h-24 flex items-center justify-center text-3xl" data-symbol="⬡">⬡</div>
+                </div>
+            </div>
+            
+            <div id="sequence-display" class="mb-8 h-16 bg-gray-900 border border-red-900 flex items-center justify-center text-2xl">
+                <div id="sequence-text">Watch carefully...</div>
+            </div>
+            
+            <div id="user-sequence" class="mb-8 h-16 bg-gray-900 border border-red-900 flex items-center justify-center text-2xl hidden">
+                <div id="user-sequence-text"></div>
+            </div>
+            
+            <div class="progress-container bg-gray-900 border border-red-900 p-2 mb-8">
+                <div class="flex justify-between mb-2">
+                    <span>Round:</span>
+                    <span id="round-text">0/5</span>
+                </div>
+                <div class="h-4 bg-gray-800 relative">
+                    <div id="round-progress" class="h-full bg-red-900 transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="lives-container mb-8 flex justify-center">
+                <div id="life-1" class="life-icon w-8 h-8 mx-2 bg-red-600"></div>
+                <div id="life-2" class="life-icon w-8 h-8 mx-2 bg-red-600"></div>
+                <div id="life-3" class="life-icon w-8 h-8 mx-2 bg-red-600"></div>
+            </div>
+            
+            <div class="text-center">
+                <button id="start-trial" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm">START TRIAL</button>
+                <button id="clear-sequence" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm hidden">CLEAR</button>
+            </div>
+        </div>
+        
+        <div class="fixed bottom-4 right-4 flex space-x-4">
+            <button id="sound-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">🔊</button>
+            <button id="music-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">♪ ON</button>
+        </div>
+    </div>
+    
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load game state
+            loadGameState();
+            gameState.survivorCount = 112; // Set for this chapter
+            updateSurvivorCount();
+            
+            // Play trial music
+            playMusic('sounds/trial_theme.mp3');
+            
+            // Trial elements
+            const startButton = document.getElementById('start-trial');
+            const clearButton = document.getElementById('clear-sequence');
+            const sequenceText = document.getElementById('sequence-text');
+            const userSequenceText = document.getElementById('user-sequence-text');
+            const userSequence = document.getElementById('user-sequence');
+            const symbolBoxes = document.querySelectorAll('.symbol-box');
+            const roundText = document.getElementById('round-text');
+            const roundProgress = document.getElementById('round-progress');
+            const lives = [
+                document.getElementById('life-1'),
+                document.getElementById('life-2'),
+                document.getElementById('life-3')
+            ];
+            
+            // Game variables
+            let currentRound = 0;
+            let currentSequence = [];
+            let userInputSequence = [];
+            let livesRemaining = 3;
+            let isShowingSequence = false;
+            let canInput = false;
+            
+            // Start trial
+            startButton.addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                startButton.classList.add('hidden');
+                clearButton.classList.remove('hidden');
+                userSequence.classList.remove('hidden');
+                
+                startTrial();
+            });
+            
+            // Clear sequence
+            clearButton.addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                userInputSequence = [];
+                updateUserSequenceDisplay();
+            });
+            
+            // Symbol box click
+            symbolBoxes.forEach(box => {
+                box.addEventListener('click', function() {
+                    if (!canInput || isShowingSequence) return;
+                    
+                    const symbol = this.getAttribute('data-symbol');
+                    userInputSequence.push(symbol);
+                    updateUserSequenceDisplay();
+                    playSound('sounds/click.mp3');
+                    
+                    // Highlight clicked box
+                    this.classList.add('border-white');
+                    setTimeout(() => {
+                        this.classList.remove('border-white');
+                    }, 200);
+                    
+                    // Check if sequence is complete
+                    if (userInputSequence.length === currentSequence.length) {
+                        checkSequence();
+                    }
+                });
+            });
+            
+            function startTrial() {
+                currentRound = 0;
+                currentSequence = [];
+                userInputSequence = [];
+                livesRemaining = 3;
+                
+                // Reset lives display
+                lives.forEach(life => {
+                    life.classList.remove('bg-gray-600');
+                    life.classList.add('bg-red-600');
+                });
+                
+                // Start first round
+                startNextRound();
+            }
+            
+            function startNextRound() {
+                currentRound++;
+                updateRoundDisplay();
+                
+                // Add new symbol to sequence
+                const symbols = ['△', '○', '□', '✕', '⬠', '⬡'];
+                const randomSymbol = symbols[Math.floor(Math.random() * symbols.length)];
+                currentSequence.push(randomSymbol);
+                
+                // Clear user input
+                userInputSequence = [];
+                updateUserSequenceDisplay();
+                
+                // Show sequence
+                showSequence();
+            }
+            
+            function showSequence() {
+                isShowingSequence = true;
+                canInput = false;
+                sequenceText.textContent = "Watch carefully...";
+                
+                let index = 0;
+                const interval = setInterval(() => {
+                    if (index < currentSequence.length) {
+                        // Show current symbol
+                        sequenceText.textContent = currentSequence[index];
+                        
+                        // Highlight corresponding box
+                        const box = Array.from(symbolBoxes).find(box => box.getAttribute('data-symbol') === currentSequence[index]);
+                        if (box) {
+                            box.classList.add('border-white');
+                            setTimeout(() => {
+                                box.classList.remove('border-white');
+                            }, 400);
+                        }
+                        
+                        playSound('sounds/click.mp3');
+                        index++;
+                    } else {
+                        // End of sequence
+                        clearInterval(interval);
+                        sequenceText.textContent = "Your turn...";
+                        isShowingSequence = false;
+                        canInput = true;
+                    }
+                }, 800);
+            }
+            
+            function updateUserSequenceDisplay() {
+                userSequenceText.textContent = userInputSequence.join(' ');
+            }
+            
+            function checkSequence() {
+                canInput = false;
+                
+                // Check if sequences match
+                let correct = true;
+                for (let i = 0; i < currentSequence.length; i++) {
+                    if (userInputSequence[i] !== currentSequence[i]) {
+                        correct = false;
+                        break;
+                    }
+                }
+                
+                if (correct) {
+                    // Correct sequence
+                    sequenceText.textContent = "Correct!";
+                    playSound('sounds/success.mp3');
+                    
+                    setTimeout(() => {
+                        if (currentRound >= 5) {
+                            // Trial complete
+                            endTrial(true);
+                        } else {
+                            // Next round
+                            startNextRound();
+                        }
+                    }, 1500);
+                } else {
+                    // Incorrect sequence
+                    sequenceText.textContent = "Incorrect!";
+                    playSound('sounds/failure.mp3');
+                    
+                    // Lose a life
+                    livesRemaining--;
+                    lives[livesRemaining].classList.remove('bg-red-600');
+                    lives[livesRemaining].classList.add('bg-gray-600');
+                    
+                    setTimeout(() => {
+                        if (livesRemaining <= 0) {
+                            // Game over
+                            endTrial(false);
+                        } else {
+                            // Retry same round
+                            userInputSequence = [];
+                            updateUserSequenceDisplay();
+                            showSequence();
+                        }
+                    }, 1500);
+                }
+            }
+            
+            function updateRoundDisplay() {
+                roundText.textContent = `${currentRound}/5`;
+                roundProgress.style.width = `${(currentRound / 5) * 100}%`;
+            }
+            
+            function endTrial(success) {
+                if (success) {
+                    // Calculate elimination
+                    const eliminationRate = 0.4; // 40% elimination
+                    const eliminated = Math.floor(gameState.survivorCount * eliminationRate);
+                    const remaining = gameState.survivorCount - eliminated;
+                    
+                    trialSuccess(remaining, 'chapterfour.html');
+                } else {
+                    gameOver('You failed to memorize the sequence correctly.');
+                }
+            }
+        });
+    </script>
+</body>
+</html>

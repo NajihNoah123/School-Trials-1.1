@@ -1,0 +1,269 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 2: Equation Escape - SCHOOL TRIALS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-black text-white font-mono">
+    <div class="container mx-auto px-4 py-8 min-h-screen">
+        <h1 class="text-4xl font-bold mb-8 text-center glitch-text">CHAPTER 2: EQUATION ESCAPE</h1>
+        
+        <div class="survivor-count text-center mb-6" id="survivor-count">186 students remain</div>
+        
+        <div class="trial-container screen-flicker">
+            <div class="trial-title">TRIAL TWO: EQUATION ESCAPE</div>
+            
+            <div class="trial-description mb-8">
+                <p>Solve the mathematical equations to unlock the door and escape.</p>
+                <p>You have 3 minutes to solve 5 equations.</p>
+                <p>Each incorrect answer will reduce your time by 15 seconds.</p>
+                <p>Failure to escape in time will result in elimination.</p>
+            </div>
+            
+            <div class="timer text-center mb-8" id="timer">03:00</div>
+            
+            <div id="equation-container" class="mb-8 text-center">
+                <div id="equation-text" class="text-2xl mb-4">Ready to begin...</div>
+                
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4 max-w-md mx-auto">
+                    <input type="text" id="answer-input" class="bg-gray-900 border border-red-900 p-2 text-white text-center text-xl" placeholder="Your answer">
+                    <button id="submit-answer" class="game-btn px-4 py-2 bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm hidden">SUBMIT</button>
+                </div>
+            </div>
+            
+            <div class="progress-container bg-gray-900 border border-red-900 p-2 mb-8">
+                <div class="flex justify-between mb-2">
+                    <span>Progress:</span>
+                    <span id="progress-text">0/5</span>
+                </div>
+                <div class="h-4 bg-gray-800 relative">
+                    <div id="progress-bar" class="h-full bg-red-900 transition-all duration-300" style="width: 0%"></div>
+                </div>
+            </div>
+            
+            <div class="escape-room bg-gray-900 border border-red-900 p-4 h-60 mb-8 relative">
+                <div id="player-icon" class="absolute bottom-4 left-4 w-8 h-8 bg-red-600"></div>
+                <div id="door" class="absolute top-0 bottom-0 right-4 w-12 bg-gray-700 flex items-center justify-center">
+                    <span class="text-white text-xs">DOOR</span>
+                </div>
+                <div id="lock-1" class="absolute top-10 right-20 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">1</div>
+                <div id="lock-2" class="absolute top-20 right-20 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">2</div>
+                <div id="lock-3" class="absolute top-30 right-20 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">3</div>
+                <div id="lock-4" class="absolute top-40 right-20 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">4</div>
+                <div id="lock-5" class="absolute top-50 right-20 w-6 h-6 bg-red-600 rounded-full flex items-center justify-center">5</div>
+            </div>
+            
+            <div class="text-center">
+                <button id="start-trial" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm">START TRIAL</button>
+            </div>
+        </div>
+        
+        <div class="fixed bottom-4 right-4 flex space-x-4">
+            <button id="sound-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">🔊</button>
+            <button id="music-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">♪ ON</button>
+        </div>
+    </div>
+    
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load game state
+            loadGameState();
+            gameState.survivorCount = 186; // Set for this chapter
+            updateSurvivorCount();
+            
+            // Play trial music
+            playMusic('sounds/trial_theme.mp3');
+            
+            // Trial elements
+            const startButton = document.getElementById('start-trial');
+            const submitButton = document.getElementById('submit-answer');
+            const equationText = document.getElementById('equation-text');
+            const answerInput = document.getElementById('answer-input');
+            const progressText = document.getElementById('progress-text');
+            const progressBar = document.getElementById('progress-bar');
+            const locks = [
+                document.getElementById('lock-1'),
+                document.getElementById('lock-2'),
+                document.getElementById('lock-3'),
+                document.getElementById('lock-4'),
+                document.getElementById('lock-5')
+            ];
+            const door = document.getElementById('door');
+            const playerIcon = document.getElementById('player-icon');
+            
+            // Equations for the trial (equation, answer)
+            const equations = [
+                { equation: "12 + 8 × 2", answer: "28" },
+                { equation: "36 ÷ 4 + 7", answer: "16" },
+                { equation: "5² - 10", answer: "15" },
+                { equation: "3 × (8 - 2)", answer: "18" },
+                { equation: "100 ÷ (5 + 5)", answer: "10" }
+            ];
+            
+            let currentEquationIndex = 0;
+            let correctAnswers = 0;
+            let timeRemaining = 180; // 3 minutes in seconds
+            let timerInterval;
+            
+            // Start trial
+            startButton.addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                startButton.classList.add('hidden');
+                submitButton.classList.remove('hidden');
+                
+                startTrial();
+            });
+            
+            // Submit answer
+            submitButton.addEventListener('click', function() {
+                checkAnswer();
+            });
+            
+            // Allow Enter key to submit
+            answerInput.addEventListener('keypress', function(e) {
+                if (e.key === 'Enter') {
+                    checkAnswer();
+                }
+            });
+            
+            function startTrial() {
+                currentEquationIndex = 0;
+                correctAnswers = 0;
+                timeRemaining = 180;
+                
+                // Reset locks
+                locks.forEach(lock => {
+                    lock.classList.remove('bg-green-600');
+                    lock.classList.add('bg-red-600');
+                });
+                
+                // Reset door
+                door.classList.remove('bg-green-600');
+                door.classList.add('bg-gray-700');
+                
+                // Reset player position
+                playerIcon.style.left = '4px';
+                
+                // Start timer
+                startTimer(timeRemaining, function() {
+                    // Time's up
+                    gameOver('You ran out of time to escape the room.');
+                });
+                
+                // Show first equation
+                showNextEquation();
+            }
+            
+            function showNextEquation() {
+                if (currentEquationIndex >= equations.length) {
+                    // All equations solved
+                    unlockDoor();
+                    return;
+                }
+                
+                // Clear previous answer
+                answerInput.value = '';
+                answerInput.classList.remove('border-green-500', 'border-red-500');
+                
+                // Show new equation
+                equationText.textContent = equations[currentEquationIndex].equation;
+                
+                // Focus answer input
+                answerInput.focus();
+                
+                // Update progress
+                updateProgress();
+            }
+            
+            function checkAnswer() {
+                const userAnswer = answerInput.value.trim();
+                const correctAnswer = equations[currentEquationIndex].answer;
+                
+                if (userAnswer === correctAnswer) {
+                    // Correct answer
+                    correctAnswers++;
+                    playSound('sounds/success.mp3');
+                    answerInput.classList.add('border-green-500');
+                    
+                    // Unlock the corresponding lock
+                    unlockLock(currentEquationIndex);
+                    
+                    // Move to next equation after a short delay
+                    setTimeout(() => {
+                        currentEquationIndex++;
+                        showNextEquation();
+                    }, 1000);
+                } else {
+                    // Incorrect answer
+                    playSound('sounds/failure.mp3');
+                    answerInput.classList.add('border-red-500');
+                    
+                    // Reduce time by 15 seconds
+                    timeRemaining = Math.max(0, timeRemaining - 15);
+                    updateTimer(timeRemaining);
+                    
+                    // Clear answer after a short delay
+                    setTimeout(() => {
+                        answerInput.value = '';
+                        answerInput.classList.remove('border-red-500');
+                        answerInput.focus();
+                    }, 1000);
+                }
+            }
+            
+            function unlockLock(index) {
+                locks[index].classList.remove('bg-red-600');
+                locks[index].classList.add('bg-green-600');
+            }
+            
+            function unlockDoor() {
+                // Unlock door
+                door.classList.remove('bg-gray-700');
+                door.classList.add('bg-green-600');
+                
+                // Show escape message
+                equationText.textContent = "Door unlocked! Escape now!";
+                
+                // Hide input and submit button
+                answerInput.classList.add('hidden');
+                submitButton.classList.add('hidden');
+                
+                // Animate player to door
+                animatePlayerToExit();
+            }
+            
+            function animatePlayerToExit() {
+                const playerAnimation = setInterval(() => {
+                    const currentLeft = parseInt(playerIcon.style.left || '4');
+                    const doorLeft = door.offsetLeft - playerIcon.clientWidth;
+                    
+                    if (currentLeft < doorLeft) {
+                        playerIcon.style.left = (currentLeft + 5) + 'px';
+                    } else {
+                        clearInterval(playerAnimation);
+                        
+                        // Player escaped
+                        setTimeout(() => {
+                            // Calculate elimination
+                            const eliminationRate = 0.4; // 40% elimination
+                            const eliminated = Math.floor(gameState.survivorCount * eliminationRate);
+                            const remaining = gameState.survivorCount - eliminated;
+                            
+                            trialSuccess(remaining, 'chapterthree.html');
+                        }, 1000);
+                    }
+                }, 50);
+            }
+            
+            function updateProgress() {
+                progressText.textContent = `${currentEquationIndex}/${equations.length}`;
+                progressBar.style.width = `${(currentEquationIndex / equations.length) * 100}%`;
+            }
+        });
+    </script>
+</body>
+</html>

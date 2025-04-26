@@ -1,0 +1,240 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Chapter 1: Attendance - SCHOOL TRIALS</title>
+  <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-black text-white font-mono">
+  <div class="container mx-auto px-4 py-8 min-h-screen">
+      <h1 class="text-4xl font-bold mb-8 text-center glitch-text">CHAPTER 1: ATTENDANCE</h1>
+      
+      <div class="survivor-count text-center mb-6" id="survivor-count">310 students remain</div>
+      
+      <div class="trial-container screen-flicker">
+          <div class="trial-title">TRIAL ONE: JOT THOUGHT BLITZ</div>
+          
+          <div class="trial-description mb-8">
+              <p>You will be given 10 seconds to write three valid answers to each prompt.</p>
+              <p>Invalid, blank, or duplicate entries will result in elimination.</p>
+              <p>You may not speak. You may not assist.</p>
+          </div>
+          
+          <div class="timer text-center mb-8" id="timer">00:10</div>
+          
+          <div id="prompt-container" class="mb-8 text-center text-xl">
+              <div id="prompt-text">Ready to begin...</div>
+          </div>
+          
+          <div id="answer-container" class="mb-8">
+              <div class="grid grid-cols-3 gap-4">
+                  <input type="text" class="answer-input bg-gray-900 border border-red-900 p-2 text-white" placeholder="Answer 1">
+                  <input type="text" class="answer-input bg-gray-900 border border-red-900 p-2 text-white" placeholder="Answer 2">
+                  <input type="text" class="answer-input bg-gray-900 border border-red-900 p-2 text-white" placeholder="Answer 3">
+              </div>
+          </div>
+          
+          <div class="text-center">
+              <button id="start-trial" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm">START TRIAL</button>
+              <button id="submit-answers" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm hidden">SUBMIT</button>
+          </div>
+          
+          <div id="classmates-container" class="mt-8 p-4 bg-gray-900 border border-red-900 rounded-sm">
+              <h3 class="text-xl mb-4">Classmates:</h3>
+              <div class="grid grid-cols-2 md:grid-cols-3 lg:grid-cols-4 gap-4 text-sm">
+                  <div class="classmate">Aades – Just a friendly person</div>
+                  <div class="classmate">Affan – Truthful sometimes</div>
+                  <div class="classmate">Afnan – Class Clown's best friend</div>
+                  <div class="classmate">Ahmad – The Class Clown</div>
+                  <div class="classmate">Arjun - Clever, Friendly, but Silent</div>
+                  <div class="classmate">Aryan – Just a curious boy</div>
+                  <div class="classmate">Asher – Just a friendly person</div>
+                  <div class="classmate">Aslam – A naughty boy</div>
+                  <div class="classmate">Badri – Worst in everything</div>
+                  <div class="classmate">Bilal – A naughty boy</div>
+                  <div class="classmate">Danish Sheikh – Very naughty boy</div>
+                  <div class="classmate">Darshan – Average person</div>
+                  <div class="classmate">Ganet – Best Handwriting</div>
+                  <div class="classmate">Hisham – Best in Voice</div>
+                  <div class="classmate">Isa – Best at drawing and English</div>
+                  <div class="classmate">Jafar – Good at Codes</div>
+                  <div class="classmate">Jasmir – Ramil's friend</div>
+                  <div class="classmate">Kevin – Badri 2.0 but worse</div>
+                  <div class="classmate">Ayaan Khazi – Isa's friend</div>
+                  <div class="classmate">Eshan – Plays the class</div>
+                  <div class="classmate">Illan – Thinks like a King</div>
+                  <div class="classmate">Zayaan – Also best at tech and drawing</div>
+                  <div class="classmate">Ayaan Mirza – Best at Tech and Ideas</div>
+                  <div class="classmate">Farhan – Best friend of a Bad person</div>
+                  <div class="classmate">Hillal – The worst Classmonitor</div>
+                  <div class="classmate">Danish – Average person</div>
+                  <div class="classmate">Najih - Smart, fastest writer in class, powerful, Good at tech</div>
+                  <div class="classmate">Raaz – Secretive boy, also the fastest writer</div>
+                  <div class="classmate">Ramil – Doesn't know how to use his IQ, but good at tricks</div>
+                  <div class="classmate">Ridwaan – Friendly but weak</div>
+                  <div class="classmate">Rishan – Just an average person</div>
+                  <div class="classmate">Ryan – Friendly but bullied</div>
+                  <div class="classmate">Shuhaib – Very Naughty</div>
+                  <div class="classmate">Yash – Naughtiest</div>
+              </div>
+          </div>
+      </div>
+      
+      <div class="fixed bottom-4 right-4 flex space-x-4">
+          <button id="sound-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">🔊</button>
+          <button id="music-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">♪ ON</button>
+      </div>
+  </div>
+  
+  <script src="scripts.js"></script>
+  <script>
+      document.addEventListener('DOMContentLoaded', function() {
+          // Load game state
+          loadGameState();
+          
+          // Play trial music
+          playMusic('sounds/trial_theme.mp3');
+          
+          // Trial elements
+          const startButton = document.getElementById('start-trial');
+          const submitButton = document.getElementById('submit-answers');
+          const promptText = document.getElementById('prompt-text');
+          const answerInputs = document.querySelectorAll('.answer-input');
+          
+          // Prompts for the trial
+          const prompts = [
+              "Name three fruits that are red.",
+              "Name three animals that can swim.",
+              "Name three items in a pencil case.",
+              "Name three shapes with corners.",
+              "Name three things found in a park.",
+              "Name three body parts you have two of.",
+              "Name three school subjects.",
+              "Name three things that can fly.",
+              "Name three vegetables that grow underground.",
+              "Name three things that are cold."
+          ];
+          
+          // Valid answers for each prompt (simplified for demo)
+          const validAnswers = {
+              0: ["apple", "cherry", "strawberry", "watermelon", "pomegranate", "raspberry", "tomato"],
+              1: ["fish", "dolphin", "crocodile", "turtle", "whale", "shark", "frog", "duck", "penguin"],
+              2: ["pen", "pencil", "eraser", "sharpener", "ruler", "compass", "scissors", "highlighter"],
+              3: ["square", "triangle", "rectangle", "pentagon", "hexagon", "octagon", "cube", "pyramid"],
+              4: ["tree", "bench", "slide", "swing", "fountain", "statue", "pond", "path", "flower"],
+              5: ["eyes", "ears", "hands", "feet", "legs", "arms", "lungs", "kidneys", "nostrils"],
+              6: ["math", "english", "science", "history", "geography", "art", "music", "pe", "physics"],
+              7: ["bird", "airplane", "kite", "helicopter", "bee", "butterfly", "bat", "rocket", "drone"],
+              8: ["carrot", "potato", "onion", "garlic", "radish", "turnip", "beetroot", "ginger", "yam"],
+              9: ["ice", "snow", "freezer", "fridge", "winter", "antarctica", "ice cream", "popsicle"]
+          };
+          
+          let currentPromptIndex = 0;
+          let correctAnswers = 0;
+          
+          // Start trial
+          startButton.addEventListener('click', function() {
+              playSound('sounds/click.mp3');
+              startButton.classList.add('hidden');
+              submitButton.classList.remove('hidden');
+              
+              // Hide classmates list during the trial
+              document.getElementById('classmates-container').classList.add('hidden');
+              
+              startTrial();
+          });
+          
+          // Submit answers
+          submitButton.addEventListener('click', function() {
+              checkAnswers();
+          });
+          
+          function startTrial() {
+              currentPromptIndex = 0;
+              correctAnswers = 0;
+              showNextPrompt();
+          }
+          
+          function showNextPrompt() {
+              if (currentPromptIndex >= prompts.length) {
+                  endTrial();
+                  return;
+              }
+              
+              // Clear previous answers
+              answerInputs.forEach(input => input.value = '');
+              answerInputs.forEach(input => input.classList.remove('border-green-500', 'border-red-500'));
+              
+              // Show new prompt
+              promptText.textContent = prompts[currentPromptIndex];
+              
+              // Focus first input
+              answerInputs[0].focus();
+              
+              // Start timer
+              startTimer(10, () => {
+                  checkAnswers();
+              });
+          }
+          
+          function checkAnswers() {
+              stopTimer();
+              
+              let allValid = true;
+              const userAnswers = [];
+              
+              // Get user answers
+              answerInputs.forEach(input => {
+                  userAnswers.push(input.value.trim().toLowerCase());
+              });
+              
+              // Check for duplicates
+              const uniqueAnswers = [...new Set(userAnswers)];
+              if (uniqueAnswers.length < userAnswers.length) {
+                  allValid = false;
+              }
+              
+              // Check for valid answers
+              const validForPrompt = validAnswers[currentPromptIndex];
+              userAnswers.forEach((answer, index) => {
+                  if (answer === '' || !validForPrompt.includes(answer)) {
+                      allValid = false;
+                      answerInputs[index].classList.add('border-red-500');
+                  } else {
+                      answerInputs[index].classList.add('border-green-500');
+                  }
+              });
+              
+              if (allValid) {
+                  correctAnswers++;
+                  playSound('sounds/success.mp3');
+              } else {
+                  playSound('sounds/failure.mp3');
+              }
+              
+              // Move to next prompt after a short delay
+              setTimeout(() => {
+                  currentPromptIndex++;
+                  showNextPrompt();
+              }, 1500);
+          }
+          
+          function endTrial() {
+              // Calculate elimination
+              const eliminationRate = 0.4; // 40% elimination
+              const eliminated = Math.floor(gameState.survivorCount * eliminationRate);
+              const remaining = gameState.survivorCount - eliminated;
+              
+              // Show results
+              if (correctAnswers >= 7) { // Player succeeds if they got at least 7 correct
+                  trialSuccess(remaining, 'chaptertwo.html');
+              } else {
+                  gameOver('You failed to provide enough correct answers in time.');
+              }
+          }
+      });
+  </script>
+</body>
+</html>

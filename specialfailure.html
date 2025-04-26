@@ -1,0 +1,65 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>You Left - SCHOOL TRIALS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-black text-white font-mono">
+    <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col justify-center items-center">
+        <h1 class="text-6xl font-bold mb-8 text-center glitch-text">YOU LEFT</h1>
+        
+        <div class="max-w-2xl text-center mb-12">
+            <p class="text-2xl mb-8">You chose to leave the School Trials.</p>
+            <p class="text-gray-400 mb-4">As you and the others who voted to leave are escorted out, you can't help but wonder...</p>
+            <p class="text-gray-400">What would have happened if you had stayed?</p>
+            <p class="text-gray-400 mt-4">What secrets remain undiscovered?</p>
+        </div>
+        
+        <div class="flex flex-col space-y-4">
+            <button id="restart-btn" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm">TRY AGAIN</button>
+        </div>
+    </div>
+
+    <audio id="ambient-sound" loop>
+        <source src="sounds/leave_ending.mp3" type="audio/mpeg">
+        <source src="sounds/leave_ending.ogg" type="audio/ogg">
+      type="audio/mpeg">
+        <source src="sounds/leave_ending.ogg" type="audio/ogg">
+    </audio>
+    
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load game state
+            loadGameState();
+            
+            // Play ambient sound
+            const ambientSound = document.getElementById('ambient-sound');
+            ambientSound.volume = 0.3;
+            
+            // Play sound on user interaction (browser policy)
+            document.body.addEventListener('click', function() {
+                if (gameState.musicEnabled) {
+                    ambientSound.play().catch(e => console.log('Audio play failed:', e));
+                }
+            }, { once: true });
+            
+            // Restart button
+            document.getElementById('restart-btn').addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                
+                // Clear game state
+                localStorage.removeItem('schoolTrials_savedGame');
+                
+                // Redirect to start
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

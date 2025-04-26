@@ -1,0 +1,287 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Chapter 4: Balance Line - SCHOOL TRIALS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-black text-white font-mono">
+    <div class="container mx-auto px-4 py-8 min-h-screen">
+        <h1 class="text-4xl font-bold mb-8 text-center glitch-text">CHAPTER 4: BALANCE LINE</h1>
+        
+        <div class="survivor-count text-center mb-6" id="survivor-count">67 students remain</div>
+        
+        <div class="trial-container screen-flicker">
+            <div class="trial-title">TRIAL FOUR: BALANCE LINE</div>
+            
+            <div class="trial-description mb-8">
+                <p>Cross the balance line without falling.</p>
+                <p>Use the arrow keys to maintain your balance.</p>
+                <p>If your balance meter reaches either extreme, you will fall.</p>
+                <p>You have 60 seconds to cross the line.</p>
+            </div>
+            
+            <div class="timer text-center mb-8" id="timer">01:00</div>
+            
+            <div class="balance-container bg-gray-900 border border-red-900 p-4 h-80 mb-8 relative">
+                <div id="balance-line" class="absolute left-0 right-0 top-1/2 h-2 bg-red-900"></div>
+                <div id="player-icon" class="absolute left-4 top-1/2 transform -translate-y-1/2 w-8 h-8 bg-red-600"></div>
+                <div id="finish-line" class="absolute top-0 bottom-0 right-4 w-2 bg-green-600"></div>
+            </div>
+            
+            <div class="balance-meter-container mb-8">
+                <div class="flex justify-between mb-2">
+                    <span>Balance:</span>
+                    <span id="balance-text">Centered</span>
+                </div>
+                <div class="h-8 bg-gray-900 border border-red-900 relative">
+                    <div id="balance-indicator" class="absolute top-0 bottom-0 w-4 bg-white" style="left: calc(50% - 2px);"></div>
+                    <div class="absolute top-0 bottom-0 left-1/2 w-0.5 bg-red-600"></div>
+                </div>
+            </div>
+            
+            <div class="text-center">
+                <button id="start-trial" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm">START TRIAL</button>
+            </div>
+            
+            <!-- Mobile controls -->
+            <div class="mobile-controls mt-8">
+                <div></div>
+                <div id="mobile-up" class="mobile-btn">↑</div>
+                <div></div>
+                <div id="mobile-left" class="mobile-btn">←</div>
+                <div></div>
+                <div id="mobile-right" class="mobile-btn">→</div>
+                <div></div>
+                <div id="mobile-down" class="mobile-btn">↓</div>
+                <div></div>
+            </div>
+        </div>
+        
+        <div class="fixed bottom-4 right-4 flex space-x-4">
+            <button id="sound-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">🔊</button>
+            <button id="music-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">♪ ON</button>
+        </div>
+    </div>
+    
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load game state
+            loadGameState();
+            gameState.survivorCount = 67; // Set for this chapter
+            updateSurvivorCount();
+            
+            // Play trial music
+            playMusic('sounds/tension_theme.mp3');
+            
+            // Trial elements
+            const startButton = document.getElementById('start-trial');
+            const playerIcon = document.getElementById('player-icon');
+            const balanceIndicator = document.getElementById('balance-indicator');
+            const balanceText = document.getElementById('balance-text');
+            const finishLine = document.getElementById('finish-line');
+            
+            // Game variables
+            let isGameActive = false;
+            let playerPosition = 4; // Starting position from left
+            let balanceValue = 50; // 0-100, 50 is centered
+            let gameInterval;
+            let balanceInterval;
+            
+            // Balance states
+            const balanceStates = [
+                { range: [0, 10], text: "Falling Left!", class: "text-red-500" },
+                { range: [11, 30], text: "Leaning Left", class: "text-yellow-500" },
+                { range: [31, 45], text: "Slightly Left", class: "text-white" },
+                { range: [46, 54], text: "Centered", class: "text-green-500" },
+                { range: [55, 69], text: "Slightly Right", class: "text-white" },
+                { range: [70, 89], text: "Leaning Right", class: "text-yellow-500" },
+                { range: [90, 100], text: "Falling Right!", class: "text-red-500" }
+            ];
+            
+            // Start trial
+            startButton.addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                startButton.classList.add('hidden');
+                
+                // Start game
+                isGameActive = true;
+                
+                // Start timer
+                startTimer(60, function() {
+                    // Time's up
+                    gameOver('You ran out of time to cross the balance line.');
+                });
+                
+                // Start game loop
+                startGameLoop();
+                
+                // Enable keyboard controls
+                enableControls();
+            });
+            
+            // Start game loop
+            function startGameLoop() {
+                // Reset player position
+                playerPosition = 4;
+                balanceValue = 50;
+                updatePlayerPosition();
+                updateBalanceIndicator();
+                
+                // Start balance fluctuation
+                balanceInterval = setInterval(() => {
+                    if (!isGameActive) return;
+                    
+                    // Random balance fluctuation
+                    const fluctuation = Math.random() * 6 - 3; // -3 to +3
+                    balanceValue += fluctuation;
+                    
+                    // Constrain balance value
+                    balanceValue = Math.max(0, Math.min(100, balanceValue));
+                    
+                    // Update balance indicator
+                    updateBalanceIndicator();
+                    
+                    // Check if player falls
+                    if (balanceValue <= 10 || balanceValue >= 90) {
+                        // Player falls
+                        playerFalls();
+                    }
+                }, 200);
+                
+                // Move player forward automatically
+                gameInterval = setInterval(() => {
+                    if (!isGameActive) return;
+                    
+                    // Move player forward slowly
+                    playerPosition += 1;
+                    updatePlayerPosition();
+                    
+                    // Check if player reached finish line
+                    if (playerPosition >= finishLine.offsetLeft - playerIcon.clientWidth) {
+                        // Player reached finish line
+                        playerFinishes();
+                    }
+                }, 500);
+            }
+            
+            // Enable controls
+            function enableControls() {
+                // Keyboard controls
+                document.addEventListener('keydown', handleKeyDown);
+                
+                // Mobile controls
+                const mobileLeft = document.getElementById('mobile-left');
+                const mobileRight = document.getElementById('mobile-right');
+                
+                mobileLeft.addEventListener('touchstart', () => adjustBalance(-5));
+                mobileRight.addEventListener('touchstart', () => adjustBalance(5));
+            }
+            
+            // Handle key down
+            function handleKeyDown(e) {
+                if (!isGameActive) return;
+                
+                switch(e.key) {
+                    case 'ArrowLeft':
+                        adjustBalance(-5);
+                        break;
+                    case 'ArrowRight':
+                        adjustBalance(5);
+                        break;
+                }
+            }
+            
+            // Adjust balance
+            function adjustBalance(amount) {
+                if (!isGameActive) return;
+                
+                // Adjust balance value
+                balanceValue += amount;
+                
+                // Constrain balance value
+                balanceValue = Math.max(0, Math.min(100, balanceValue));
+                
+                // Update balance indicator
+                updateBalanceIndicator();
+                
+                // Play sound
+                playSound('sounds/click.mp3');
+                
+                // Check if player falls
+                if (balanceValue <= 10 || balanceValue >= 90) {
+                    // Player falls
+                    playerFalls();
+                }
+            }
+            
+            // Update player position
+            function updatePlayerPosition() {
+                playerIcon.style.left = `${playerPosition}px`;
+            }
+            
+            // Update balance indicator
+            function updateBalanceIndicator() {
+                // Update indicator position
+                balanceIndicator.style.left = `${balanceValue}%`;
+                
+                // Update balance text
+                for (const state of balanceStates) {
+                    if (balanceValue >= state.range[0] && balanceValue <= state.range[1]) {
+                        balanceText.textContent = state.text;
+                        balanceText.className = state.class;
+                        break;
+                    }
+                }
+            }
+            
+            // Player falls
+            function playerFalls() {
+                // End game
+                endGame();
+                
+                // Play sound
+                playSound('sounds/failure.mp3');
+                
+                // Show falling animation
+                playerIcon.classList.add('falling');
+                
+                // Game over
+                setTimeout(() => {
+                    gameOver('You lost your balance and fell!');
+                }, 1500);
+            }
+            
+            // Player finishes
+            function playerFinishes() {
+                // End game
+                endGame();
+                
+                // Play sound
+                playSound('sounds/success.mp3');
+                
+                // Calculate elimination
+                const eliminationRate = 0.4; // 40% elimination
+                const eliminated = Math.floor(gameState.survivorCount * eliminationRate);
+                const remaining = gameState.survivorCount - eliminated;
+                
+                // Success
+                setTimeout(() => {
+                    trialSuccess(remaining, 'chapterfive.html');
+                }, 1000);
+            }
+            
+            // End game
+            function endGame() {
+                isGameActive = false;
+                clearInterval(gameInterval);
+                clearInterval(balanceInterval);
+                document.removeEventListener('keydown', handleKeyDown);
+            }
+        });
+    </script>
+</body>
+</html>

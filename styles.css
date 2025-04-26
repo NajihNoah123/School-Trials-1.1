@@ -1,0 +1,428 @@
+/* Base styles */
+body {
+    background-color: #000;
+    color: #fff;
+    font-family: monospace;
+    margin: 0;
+    padding: 0;
+    overflow-x: hidden;
+}
+
+/* Horror game elements */
+.glitch-text {
+    position: relative;
+    animation: glitch 3s infinite;
+    text-shadow: 2px 2px 0 #ff0000, -2px -2px 0 #0000ff;
+}
+
+.screen-flicker {
+    animation: flicker 8s infinite;
+}
+
+.vhs-effect {
+    position: relative;
+    overflow: hidden;
+}
+
+.static-lines {
+    position: absolute;
+    top: 0;
+    left: 0;
+    width: 100%;
+    height: 100%;
+    z-index: 1;
+    pointer-events: none;
+}
+
+.scan-line {
+    position: absolute;
+    width: 100%;
+    height: 1px;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+.glitch {
+    animation: major-glitch 0.15s forwards;
+}
+
+/* Typing effect */
+.typing-text p {
+  opacity: 0;
+  transform: translateY(10px);
+  transition: opacity 1s ease, transform 1s ease;
+  margin-bottom: 1rem;
+}
+
+.typing-text p.visible {
+  opacity: 1;
+  transform: translateY(0);
+}
+
+/* Game buttons */
+.game-btn {
+    position: relative;
+    overflow: hidden;
+    transition: all 0.3s;
+}
+
+.game-btn:hover {
+    text-shadow: 0 0 5px #fff, 0 0 10px #fff;
+}
+
+.game-btn:before {
+    content: '';
+    position: absolute;
+    top: 0;
+    left: -100%;
+    width: 100%;
+    height: 2px;
+    background: linear-gradient(90deg, transparent, #ff0000);
+    animation: btn-animation 2s linear infinite;
+}
+
+/* Timer styles */
+.timer {
+    font-size: 2rem;
+    font-weight: bold;
+    color: #ff0000;
+    text-shadow: 0 0 5px #ff0000;
+}
+
+.timer.warning {
+    animation: pulse 1s infinite;
+}
+
+.survivor-count {
+    font-size: 1.25rem;
+    color: #ff0000;
+    margin-bottom: 1rem;
+}
+
+/* Character selection */
+.character-card {
+  background-color: rgba(20, 20, 20, 0.8);
+  border: 1px solid rgba(255, 0, 0, 0.2);
+  transition: all 0.3s ease;
+}
+
+.character-card:hover {
+  transform: translateY(-5px);
+  box-shadow: 0 0 15px rgba(255, 0, 0, 0.3);
+  border-color: rgba(255, 0, 0, 0.5);
+}
+
+.character-card.selected {
+  border-color: rgba(255, 0, 0, 0.8);
+  box-shadow: 0 0 20px rgba(255, 0, 0, 0.5);
+}
+
+/* Trial container */
+.trial-container {
+    border: 1px solid #ff0000;
+    padding: 2rem;
+    margin-bottom: 2rem;
+    background-color: rgba(0, 0, 0, 0.8);
+}
+
+.trial-title {
+    font-size: 1.5rem;
+    font-weight: bold;
+    color: #ff0000;
+    margin-bottom: 1rem;
+    text-align: center;
+}
+
+/* Memory card styles */
+.memory-card {
+    perspective: 1000px;
+    transform-style: preserve-3d;
+    transition: transform 0.5s;
+    cursor: pointer;
+}
+
+.memory-card.flipped {
+    transform: rotateY(180deg);
+}
+
+.card-front, .card-back {
+    position: absolute;
+    width: 100%;
+    height: 100%;
+    backface-visibility: hidden;
+}
+
+.card-front {
+    transform: rotateY(180deg);
+}
+
+/* Shape styles for puzzles */
+.triangle {
+    clip-path: polygon(50% 0%, 0% 100%, 100% 100%);
+}
+
+.diamond {
+    clip-path: polygon(50% 0%, 100% 50%, 50% 100%, 0% 50%);
+}
+
+.star {
+    clip-path: polygon(50% 0%, 61% 35%, 98% 35%, 68% 57%, 79% 91%, 50% 70%, 21% 91%, 32% 57%, 2% 35%, 39% 35%);
+}
+
+.hexagon {
+    clip-path: polygon(25% 0%, 75% 0%, 100% 50%, 75% 100%, 25% 100%, 0% 50%);
+}
+
+/* Balance beam styles */
+.balance-beam {
+    position: relative;
+    height: 20px;
+    background-color: #8b4513;
+    transform-origin: center;
+    transition: transform 0.2s;
+}
+
+.player-character {
+    position: absolute;
+    width: 20px;
+    height: 40px;
+    background-color: #ff0000;
+    bottom: 20px;
+    left: calc(50% - 10px);
+    transition: left 0.2s;
+}
+
+/* Maze styles */
+.maze-container {
+    position: relative;
+    overflow: hidden;
+}
+
+.maze-wall {
+    position: absolute;
+    background-color: #333;
+    border: 1px solid #444;
+}
+
+.maze-player {
+    position: absolute;
+    width: 20px;
+    height: 20px;
+    background-color: #ff0000;
+    border-radius: 50%;
+    transition: all 0.2s;
+}
+
+.maze-exit {
+    position: absolute;
+    width: 30px;
+    height: 30px;
+    background-color: #00ff00;
+    border-radius: 5px;
+}
+
+/* Code challenge styles */
+.code-editor {
+  width: 100%;
+  height: 200px;
+  background-color: #111;
+  color: #eee;
+  font-family: "Courier New", monospace;
+  padding: 10px;
+  border: 1px solid rgba(255, 0, 0, 0.3);
+  resize: none;
+}
+
+.code-output {
+  width: 100%;
+  height: 100px;
+  background-color: #222;
+  color: #0f0;
+  font-family: "Courier New", monospace;
+  padding: 10px;
+  border: 1px solid rgba(0, 255, 0, 0.3);
+  margin-top: 10px;
+}
+
+/* Voting system styles */
+.vote-option {
+    border: 1px solid #666;
+    padding: 1rem;
+    margin-bottom: 1rem;
+    cursor: pointer;
+    transition: all 0.3s;
+}
+
+.vote-option:hover {
+    border-color: #ff0000;
+    background-color: rgba(255, 0, 0, 0.1);
+}
+
+.vote-option.selected {
+    border-color: #ff0000;
+    background-color: rgba(255, 0, 0, 0.2);
+}
+
+.vote-results {
+    margin-top: 2rem;
+}
+
+.vote-bar {
+    height: 20px;
+    background-color: #ff0000;
+    margin-bottom: 0.5rem;
+    transition: width 1s;
+}
+
+/* Modal styles */
+.modal {
+  position: fixed;
+  top: 0;
+  left: 0;
+  width: 100%;
+  height: 100%;
+  background-color: rgba(0, 0, 0, 0.8);
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  z-index: 1000;
+  opacity: 0;
+  visibility: hidden;
+  transition: opacity 0.3s ease, visibility 0.3s ease;
+}
+
+.modal.active {
+  opacity: 1;
+  visibility: visible;
+}
+
+.modal-content {
+  width: 90%;
+  max-width: 500px;
+  background-color: #111;
+  border: 1px solid rgba(255, 0, 0, 0.5);
+  padding: 20px;
+  position: relative;
+}
+
+.modal-close {
+  position: absolute;
+  top: 10px;
+  right: 10px;
+  font-size: 1.5rem;
+  cursor: pointer;
+  color: rgba(255, 0, 0, 0.7);
+}
+
+/* Mobile controls */
+.mobile-controls {
+    display: grid;
+    grid-template-columns: repeat(3, 1fr);
+    gap: 0.5rem;
+    margin-top: 1rem;
+}
+
+.mobile-btn {
+    padding: 1rem;
+    background-color: rgba(255, 255, 255, 0.1);
+    border: 1px solid #666;
+    text-align: center;
+    user-select: none;
+}
+
+.mobile-btn:active {
+    background-color: rgba(255, 0, 0, 0.3);
+}
+
+/* Animations */
+@keyframes glitch {
+    0% {
+        text-shadow: 2px 2px 0 #ff0000, -2px -2px 0 #0000ff;
+    }
+    25% {
+        text-shadow: -2px 2px 0 #ff0000, 2px -2px 0 #0000ff;
+    }
+    50% {
+        text-shadow: 2px -2px 0 #ff0000, -2px 2px 0 #0000ff;
+    }
+    75% {
+        text-shadow: -2px -2px 0 #ff0000, 2px 2px 0 #0000ff;
+    }
+    100% {
+        text-shadow: 2px 2px 0 #ff0000, -2px -2px 0 #0000ff;
+    }
+}
+
+@keyframes flicker {
+    0% { opacity: 1; }
+    3% { opacity: 0.8; }
+    6% { opacity: 1; }
+    7% { opacity: 0.9; }
+    8% { opacity: 1; }
+    9% { opacity: 0.9; }
+    10% { opacity: 1; }
+    89% { opacity: 1; }
+    90% { opacity: 0.9; }
+    91% { opacity: 1; }
+    92% { opacity: 0.8; }
+    93% { opacity: 1; }
+    94% { opacity: 0.9; }
+    95% { opacity: 1; }
+    96% { opacity: 0.9; }
+    97% { opacity: 1; }
+    98% { opacity: 0.8; }
+    100% { opacity: 1; }
+}
+
+@keyframes major-glitch {
+    0% { transform: translate(0); }
+    20% { transform: translate(-10px, 5px); }
+    40% { transform: translate(10px, -5px); }
+    60% { transform: translate(-5px, -5px); }
+    80% { transform: translate(5px, 5px); }
+    100% { transform: translate(0); }
+}
+
+@keyframes btn-animation {
+    0% { left: -100%; }
+    50% { left: 100%; }
+    100% { left: 100%; }
+}
+
+@keyframes pulse {
+    0% { opacity: 1; }
+    50% { opacity: 0.5; }
+    100% { opacity: 1; }
+}
+
+/* Responsive design */
+@media (max-width: 768px) {
+    .trial-container {
+        padding: 1rem;
+    }
+    
+    .timer {
+        font-size: 1.5rem;
+    }
+    
+    .mobile-controls {
+        display: grid;
+    }
+    .memory-card {
+    width: 70px;
+    height: 70px;
+  }
+
+  .maze-container {
+    height: 300px;
+  }
+
+  .trial-title {
+    font-size: 1.5rem;
+  }
+}
+
+@media (min-width: 769px) {
+    .mobile-controls {
+        display: none;
+    }
+}

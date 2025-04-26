@@ -1,0 +1,68 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Game Over - SCHOOL TRIALS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-black text-white font-mono">
+    <div class="container mx-auto px-4 py-8 min-h-screen flex flex-col justify-center items-center">
+        <h1 class="text-6xl font-bold mb-8 text-center glitch-text text-red-600">ELIMINATED</h1>
+        
+        <div class="max-w-2xl text-center mb-12">
+            <p id="failure-message" class="text-2xl mb-8">You have been eliminated from the School Trials.</p>
+            <p class="text-gray-400">Your journey ends here, but the trials continue without you.</p>
+        </div>
+        
+        <div class="flex flex-col space-y-4">
+            <button id="restart-btn" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm">TRY AGAIN</button>
+        </div>
+        
+        <div class="mt-16 text-gray-600 text-sm">
+            <p id="elimination-count"></p>
+        </div>
+    </div>
+
+    <audio id="failure-sound" autoplay>
+        <source src="sounds/elimination.mp3" type="audio/mpeg">
+        <source src="sounds/elimination.ogg" type="audio/ogg">
+    </audio>
+    
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Get failure message
+            const failureMessage = localStorage.getItem('gameOverMessage') || 'You have been eliminated from the School Trials.';
+            document.getElementById('failure-message').textContent = failureMessage;
+            
+            // Load game state
+            loadGameState();
+            
+            // Set elimination count
+            const eliminationCount = document.getElementById('elimination-count');
+            if (gameState.survivorCount) {
+                eliminationCount.textContent = `${gameState.survivorCount} students remain in the trials.`;
+            }
+            
+            // Play failure sound
+            const failureSound = document.getElementById('failure-sound');
+            failureSound.volume = 0.5;
+            
+            // Restart button
+            document.getElementById('restart-btn').addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                
+                // Clear game state
+                localStorage.removeItem('schoolTrials_savedGame');
+                
+                // Redirect to start
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>

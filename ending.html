@@ -1,0 +1,87 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Ending - SCHOOL TRIALS</title>
+    <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
+    <link rel="stylesheet" href="styles.css">
+</head>
+<body class="bg-black text-white font-mono">
+    <div class="container mx-auto px-4 py-8 min-h-screen">
+        <h1 class="text-4xl font-bold mb-8 text-center glitch-text">THE END</h1>
+        
+        <div class="max-w-3xl mx-auto">
+            <div class="trial-container screen-flicker">
+                <div class="mb-8 typing-text">
+                    <p>The room was white—blindingly white—with no doors, windows, or visible lights. It felt like a blank slate, a fresh beginning.</p>
+                    <p>Ramil stood alone, the sole survivor of the School Trials.</p>
+                    <p>As he stepped into the sunlight, a voice boomed:</p>
+                    <p class="text-red-500 text-xl">"WINNER: RAMIL"</p>
+                    <p>Confetti burst into the air. An empty schoolyard outside shimmered in morning light. A new day.</p>
+                    <p>He walked alone, but not empty.</p>
+                    <p>Because he carried the hearts of 309 with him.</p>
+                    <p class="mt-8">When he reached home, his brother had a letter waiting for him. Written inside was:</p>
+                    <p class="text-red-500">"Congratulations Ramil,</p>
+                    <p class="text-red-500">You have reached our expectations. Come to this URL to join in with your..."</p>
+                    <p>The letter ended abruptly.</p>
+                    <p class="mt-8">What awaits Ramil? A bittersweet truth? A new beginning? Or perhaps...</p>
+                    <p>Another trial?</p>
+                    <p class="text-center text-red-500 text-2xl mt-8">TO BE CONTINUED</p>
+                </div>
+                
+                <div class="text-center mt-12">
+                    <p class="text-gray-400 mb-8">Thank you for playing SCHOOL TRIALS</p>
+                    <button id="restart-btn" class="game-btn px-8 py-3 text-xl bg-red-900 hover:bg-red-700 transition-colors duration-300 rounded-sm">PLAY AGAIN</button>
+                </div>
+            </div>
+            
+            <div class="mt-8 text-center text-gray-500 text-sm">
+                <p>From 310 students to 1 survivor.</p>
+                <p>The School Trials have ended... for now.</p>
+            </div>
+        </div>
+        
+        <div class="fixed bottom-4 right-4 flex space-x-4">
+            <button id="sound-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">🔊</button>
+            <button id="music-toggle" class="px-3 py-1 bg-gray-800 rounded-sm">♪ ON</button>
+        </div>
+    </div>
+    
+    <script src="scripts.js"></script>
+    <script>
+        document.addEventListener('DOMContentLoaded', function() {
+            // Load game state
+            loadGameState();
+            
+            // Play ending music
+            playMusic('sounds/ending_theme.mp3');
+            
+            // Typing effect for text
+            const textElements = document.querySelectorAll('.typing-text p');
+            let delay = 0;
+            
+            textElements.forEach(element => {
+                setTimeout(() => {
+                    element.classList.add('visible');
+                    playSound('sounds/typing.mp3');
+                }, delay);
+                delay += 2000;
+            });
+            
+            // Restart button
+            document.getElementById('restart-btn').addEventListener('click', function() {
+                playSound('sounds/click.mp3');
+                
+                // Clear game state
+                localStorage.removeItem('schoolTrials_savedGame');
+                
+                // Redirect to start
+                setTimeout(() => {
+                    window.location.href = 'index.html';
+                }, 1000);
+            });
+        });
+    </script>
+</body>
+</html>
